@@ -1,0 +1,12 @@
+# 🦊 Configuracion TecnoFox - Limites de Subida para PHP
+# Estos valores sobreescriben los limites por defecto del contenedor php:8.2-apache
+
+php_value upload_max_filesize 10M
+php_value post_max_size 30M
+php_value max_file_uploads 10
+
+<FilesMatch "^(database\.sqlite|init_db\.php)$">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 403 ^/(app|phpmailer|storage|uploads/leads)/

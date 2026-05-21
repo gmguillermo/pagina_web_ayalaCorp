@@ -1,0 +1,7 @@
+database.sqlite
+uf_cache.json
+storage/cache/*
+!storage/cache/.gitkeep
+uploads/leads/*
+!uploads/leads/.htaccess
+.DS_Store

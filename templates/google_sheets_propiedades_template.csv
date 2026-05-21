@@ -1,0 +1,4 @@
+published,title,type,operation,commune,price_label,price_value,bedrooms,bathrooms,area,status,image,video_url,description
+1,Departamento nuevo con entrega inmediata,Departamento,Venta,La Cisterna,UF 2.450,2450,2,2,52 m2,Entrega inmediata,https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80,https://www.youtube.com/watch?v=VIDEO_ID,"Ideal para primera vivienda o inversion con alta conectividad a Metro y servicios."
+1,Proyecto en verde para inversion,Departamento,Venta,Santiago Centro,Desde UF 2.100,2100,1,1,38 m2,En verde,https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80,https://youtu.be/VIDEO_ID,"Oportunidad con pie en cuotas y buen potencial de arriendo mensual."
+0,Ejemplo oculto,Casa,Venta,Providencia,UF 5.900,5900,3,2,120 m2,Reservada,https://example.com/foto.jpg,,"Esta fila no se vera porque published esta en 0."
