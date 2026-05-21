@@ -2,7 +2,18 @@
 
 Guia completa para levantar, configurar y publicar este sitio.
 
-Este documento esta escrito para una persona que nunca ha desarrollado un proyecto web. Sigue los pasos en orden.
+Este documento está escrito para una persona que nunca ha desarrollado un proyecto web. Sigue los pasos en orden.
+
+## Guía rápida para principiantes
+
+1. Descarga o copia el proyecto en tu equipo.
+2. Abre una terminal en la carpeta del proyecto.
+3. Configura `app/config.php` con tus datos de correo y Google Sheets.
+4. Ejecuta `php init_db.php` para crear la base de datos.
+5. Ejecuta `php -S 127.0.0.1:8000`.
+6. Abre el navegador en `http://127.0.0.1:8000/index.php`.
+
+> Este mismo flujo funciona en macOS y Windows si tienes PHP disponible.
 
 ## 1. Que es este proyecto
 
@@ -25,25 +36,126 @@ El sitio usa:
 
 ## 2. Lo mas importante antes de empezar
 
-No necesitas compilar nada.
+Este proyecto está diseñado para ejecutarse en una computadora con PHP instalado. No necesitas saber programar, no necesitas Node, npm ni MySQL.
 
-No necesitas Node.
+Sigue estos pasos en orden:
 
-No necesitas npm.
+1. Copia o descarga el proyecto en tu equipo.
+2. Abre una terminal en la carpeta del proyecto.
+3. Configura los datos de Google Sheets y correo en `app/config.php`.
+4. Ejecuta `php init_db.php` para crear la base de datos.
+5. Ejecuta `php -S 127.0.0.1:8000` para iniciar el servidor.
+6. Abre el navegador en `http://127.0.0.1:8000/index.php`.
 
-No necesitas base de datos externa tipo MySQL.
+> Si quieres, puedes usar `app/config.php` con valores directos mientras aprendes. Es la forma más simple para principiantes.
 
-Solo necesitas PHP.
+## 3. Qué necesitas antes de todo
 
-El proyecto se puede correr localmente con este comando:
+Antes de ejecutar el sitio, revisa estos elementos:
 
-```bash
-php -S 127.0.0.1:8000
+### 3.1 Copia del proyecto
+
+Debes tener la carpeta del proyecto en tu equipo. Dentro deben estar los archivos:
+
+- `index.php`
+- `blog.php`
+- `propiedades.php`
+- `mailer.php`
+- `init_db.php`
+- `app/config.php`
+- `app/properties.php`
+- `app/blogs.php`
+- `app/database.php`
+
+Si no tienes la carpeta, descárgala desde el repositorio o copia todo el contenido a una carpeta nueva.
+
+### 3.2 Qué ID y URL usar en Google Sheets
+
+El proyecto puede leer datos desde Google Sheets si publicas tus hojas como CSV.
+
+Para usar tus propios datos, necesitas dos URLs de Google Sheets:
+
+- `PROPERTIES_SHEET_CSV_URL` para la hoja de propiedades.
+- `BLOG_SHEET_CSV_URL` para la hoja de blog.
+
+Cómo obtener el ID y la URL CSV:
+
+1. Abre tu hoja en Google Sheets.
+2. Ve a `Archivo` → `Publicar en la web`.
+3. Selecciona la pestaña de datos.
+4. Elige el formato `Valores separados por comas (.csv)`.
+5. Copia el enlace generado.
+
+La URL debe verse así:
+
+```text
+https://docs.google.com/spreadsheets/d/<TU_ID>/gviz/tq?tqx=out:csv&sheet=Sheet1
 ```
 
-Luego se abre en el navegador.
+- `<TU_ID>` es el identificador largo de tu hoja.
+- `sheet=Sheet1` puede cambiar según el nombre de la pestaña.
 
-## 3. Estructura real del proyecto
+> Si no configuras estas URLs, el sitio mostrará contenido de ejemplo que ya viene incluido.
+
+### 3.3 Variables de correo necesarias
+
+Para que el formulario funcione y envíe correos, necesitas configurar estas variables:
+
+- `MAIL_TO`
+- `SMTP_HOST`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_PORT`
+- `MAIL_FROM_NAME`
+
+Si no sabes qué poner, lo más fácil es editar `app/config.php` y reemplazar los valores de ejemplo por los tuyos.
+
+Ejemplo sencillo en `app/config.php`:
+
+```php
+return [
+    'mail_to' => 'tu-correo@ejemplo.com',
+    'smtp_host' => 'smtp.gmail.com',
+    'smtp_username' => 'tu-correo@gmail.com',
+    'smtp_password' => 'TU_PASSWORD_DE_APLICACION',
+    'smtp_port' => 465,
+    'from_name' => 'Airuska Ayala',
+    'properties_sheet_csv_url' => 'https://docs.google.com/spreadsheets/d/<TU_ID>/gviz/tq?tqx=out:csv&sheet=propiedades',
+    'properties_cache_seconds' => 900,
+    'blog_sheet_csv_url' => 'https://docs.google.com/spreadsheets/d/<TU_ID>/gviz/tq?tqx=out:csv&sheet=blog',
+    'blog_cache_seconds' => 900,
+];
+```
+
+### 3.4 Complementos de PHP
+
+Este sitio necesita PHP con soporte para:
+
+- `sqlite3`
+- `mbstring`
+- `curl`
+- `xml`
+
+En macOS normalmente estos módulos vienen con PHP. En Windows, si usas XAMPP o Laragon, suelen venir incluidos.
+
+Si no estás seguro, abre una terminal y ejecuta:
+
+```bash
+php -m
+```
+
+Luego busca en la lista `sqlite3`, `mbstring`, `curl` y `xml`.
+
+### 3.5 Uso de las plantillas CSV
+
+Las plantillas están en:
+
+- `templates/google_sheets_propiedades_template.csv`
+- `templates/google_sheets_blog_template.csv`
+
+Puedes abrir estos archivos en Excel o importarlos a Google Sheets para usar el formato correcto.
+
+## 4. Estructura real del proyecto
 
 ```text
 .
@@ -75,7 +187,7 @@ Luego se abre en el navegador.
 └── README_HOSTING.md
 ```
 
-## 4. Para que sirve cada archivo
+## 5. Para que sirve cada archivo
 
 ### Paginas visibles
 
@@ -104,75 +216,98 @@ Luego se abre en el navegador.
 - `templates/google_sheets_propiedades_template.csv`: plantilla para Google Sheets de propiedades.
 - `templates/google_sheets_blog_template.csv`: plantilla para Google Sheets del blog.
 
-## 5. Instalar PHP en local
+## 6. Instalar PHP en local
+
+### Requisitos generales
+
+Para levantar este proyecto solo necesitas PHP. No se requiere Node, npm ni compilación. El sitio usa SQLite, por lo que también necesitas PHP con soporte para SQLite.
 
 ### Si usas macOS
 
 1. Abre la app Terminal.
-2. Instala Homebrew si no lo tienes desde:
+2. Si no tienes Homebrew, instálalo desde:
 
 ```text
 https://brew.sh/
 ```
 
-3. Instala PHP:
+3. Instala PHP con:
 
 ```bash
 brew install php
 ```
 
-4. Opcionalmente instala Composer:
-
-```bash
-brew install composer
-```
-
-5. Confirma que PHP quedo instalado:
+4. Confirma la instalación:
 
 ```bash
 php -v
 ```
 
-Debe mostrar algo parecido a:
+Deberías ver algo como:
 
 ```text
 PHP 8.x.x
 ```
 
+5. Si quieres, puedes instalar Composer también:
+
+```bash
+brew install composer
+```
+
 ### Si usas Windows
 
-La opcion mas facil es instalar Laragon o XAMPP.
+1. Instala una distribución de PHP o un paquete que incluya PHP como:
 
-Opcion recomendada para principiantes:
+- Laragon: `https://laragon.org/download/`
+- XAMPP: `https://www.apachefriends.org/es/index.html`
 
-```text
-https://laragon.org/download/
-```
+2. Abre una terminal de Windows que tenga acceso a `php`:
 
-Despues abre una terminal dentro de la carpeta del proyecto y verifica:
+- PowerShell
+- Símbolo del sistema (cmd)
+- Terminal de Laragon
 
-```bash
+3. Ve a la carpeta del proyecto y verifica PHP:
+
+```powershell
 php -v
 ```
 
-### Si usas Linux
+4. Si `php` no se reconoce:
 
-En Ubuntu/Debian:
+- Con XAMPP, usa el PHP incluido:
 
-```bash
-sudo apt update
-sudo apt install php php-sqlite3 php-mbstring php-curl php-xml
+```powershell
+C:\xampp\php\php.exe -v
 ```
 
-Verifica:
+Y para ejecutar el sitio:
 
-```bash
-php -v
+```powershell
+cd C:\ruta\a\tu\proyecto
+C:\xampp\php\php.exe -S 127.0.0.1:8000
 ```
 
-## 6. Como abrir una terminal en la carpeta del proyecto
+- Con Laragon, abre la terminal de Laragon y utiliza `php -v` desde allí.
 
-Debes estar dentro de la carpeta donde estan estos archivos:
+Si `php` ya está en tu `PATH`, solo usa `php -S 127.0.0.1:8000`.
+
+5. Si usas XAMPP, también puedes copiar el proyecto a `C:\xampp\htdocs\tu_proyecto` y abrirlo en el navegador con `http://localhost/tu_proyecto/index.php`, pero preferimos usar el servidor de PHP incorporado para desarrollo.
+
+### Comando común para Mac y Windows
+
+Desde la carpeta del proyecto, puedes levantar el servidor local con el mismo comando en macOS y Windows:
+
+```bash
+php -S 127.0.0.1:8000
+```
+
+Esto funciona si el comando `php` está disponible en tu terminal.
+
+## 7. Cómo abrir una terminal en la carpeta del proyecto
+
+Debes estar dentro de la carpeta donde están estos archivos:
 
 ```text
 index.php
@@ -180,19 +315,19 @@ blog.php
 propiedades.php
 ```
 
-En este equipo, la ruta usada durante desarrollo fue:
-
-```text
-/Users/coderslab/Downloads/pagwewairuskaayala
-```
-
-Para entrar:
+Ejemplo en macOS:
 
 ```bash
 cd /Users/coderslab/Downloads/pagwewairuskaayala
 ```
 
-Si el proyecto esta en otra carpeta, cambia la ruta.
+Ejemplo en Windows PowerShell:
+
+```powershell
+cd C:\Users\tu_usuario\Downloads\pagwewairuskaayala
+```
+
+Si el proyecto está en otra carpeta, cambia la ruta.
 
 Ejemplo:
 
@@ -200,7 +335,7 @@ Ejemplo:
 cd /Users/tu_usuario/Desktop/airuska-web
 ```
 
-## 7. Verificar que los archivos PHP no tienen errores
+## 8. Verificar que los archivos PHP no tienen errores
 
 Ejecuta estos comandos:
 
@@ -221,7 +356,7 @@ Si todo esta bien, veras mensajes como:
 No syntax errors detected in index.php
 ```
 
-## 8. Inicializar la base de datos
+## 9. Inicializar la base de datos
 
 Este proyecto usa SQLite. La base esta en:
 
@@ -243,7 +378,7 @@ SUCCESS
 
 Si ves `SUCCESS`, puedes continuar.
 
-## 9. Levantar el sitio en local
+## 10. Levantar el sitio en local
 
 En la terminal, dentro de la carpeta del proyecto, ejecuta:
 
@@ -272,7 +407,7 @@ Importante:
 
 Para que otra persona vea el sitio, hay que subirlo a hosting o usar un tunel temporal.
 
-## 10. Que configurar en `app/config.php`
+## 11. Que configurar en `app/config.php`
 
 Abre este archivo:
 

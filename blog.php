@@ -28,17 +28,33 @@ $secondary_blogs = array_slice($blogs, 1);
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased">
     <header class="sticky top-0 z-50 bg-white shadow-sm">
-        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+        <nav class="container mx-auto px-6 py-5 flex items-center justify-between">
             <a href="index.php" class="text-2xl font-bold text-gray-900">Airuska Ayala</a>
-            <ul class="hidden md:flex space-x-8 text-gray-700 font-medium">
-                <li><a href="index.php#hero" class="hover:text-emerald-600 transition">Inicio</a></li>
-                <li><a href="index.php#servicios" class="hover:text-emerald-600 transition">Servicios</a></li>
-                <li><a href="propiedades.php" class="hover:text-emerald-600 transition">Propiedades</a></li>
-                <li><a href="blog.php" class="text-emerald-600">Blog</a></li>
-                <li><a href="index.php#contacto" class="hover:text-emerald-600 transition">Contacto</a></li>
-            </ul>
-            <a href="index.php#contacto" class="hidden sm:inline-flex bg-black text-white px-5 py-3 rounded-xl font-bold hover:bg-emerald-600 transition">Agenda</a>
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-open" type="button" class="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-100" aria-label="Abrir menú" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <ul class="hidden md:flex space-x-8 text-gray-700 font-medium">
+                    <li><a href="index.php#hero" class="hover:text-emerald-600 transition">Inicio</a></li>
+                    <li><a href="index.php#servicios" class="hover:text-emerald-600 transition">Servicios</a></li>
+                    <li><a href="propiedades.php" class="hover:text-emerald-600 transition">Propiedades</a></li>
+                    <li><a href="blog.php" class="text-emerald-600">Blog</a></li>
+                    <li><a href="index.php#contacto" class="hover:text-emerald-600 transition">Contacto</a></li>
+                </ul>
+                <a href="index.php#contacto" class="hidden sm:inline-flex bg-black text-white px-5 py-3 rounded-xl font-bold hover:bg-emerald-600 transition">Agenda</a>
+            </div>
         </nav>
+        <div id="mobile-navigation" class="md:hidden hidden border-t border-gray-200 bg-white">
+            <div class="container mx-auto px-6 py-4 space-y-3">
+                <a href="index.php#hero" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Inicio</a>
+                <a href="index.php#servicios" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Servicios</a>
+                <a href="propiedades.php" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Propiedades</a>
+                <a href="blog.php" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Blog</a>
+                <a href="index.php#contacto" class="block w-full text-center bg-black text-white px-4 py-3 rounded-2xl font-bold hover:bg-emerald-600 transition">Agenda</a>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -51,7 +67,7 @@ $secondary_blogs = array_slice($blogs, 1);
                         <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">Invierte con información, no con intuición.</h1>
                         <p class="text-xl text-gray-300 leading-relaxed max-w-3xl">Guías claras sobre compra en verde, plusvalía, financiamiento y costos reales para tomar mejores decisiones en Santiago.</p>
                     </div>
-                    <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                         <div class="bg-white/10 border border-white/10 p-5 rounded-2xl">
                             <strong class="block text-3xl font-extrabold text-emerald-300"><?= count($blogs) ?></strong>
                             <span class="text-xs uppercase tracking-widest text-gray-300">Artículos</span>
@@ -160,5 +176,25 @@ $secondary_blogs = array_slice($blogs, 1);
             <a href="index.php" class="text-emerald-300 font-bold hover:text-emerald-200 transition">Volver al inicio</a>
         </div>
     </footer>
+    <script>
+        (function() {
+            const menuButton = document.getElementById('mobile-menu-open');
+            const mobileNav = document.getElementById('mobile-navigation');
+            if (!menuButton || !mobileNav) return;
+
+            menuButton.addEventListener('click', () => {
+                const isHidden = mobileNav.classList.contains('hidden');
+                mobileNav.classList.toggle('hidden', !isHidden);
+                menuButton.setAttribute('aria-expanded', String(isHidden));
+            });
+
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.add('hidden');
+                    menuButton.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

@@ -35,17 +35,34 @@ try {
 <body class="bg-gray-50 text-gray-900 antialiased">
 
     <header class="sticky-header bg-white shadow-sm">
-        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+        <nav class="container mx-auto px-6 py-5 flex items-center justify-between">
             <a href="#" class="text-2xl font-bold text-gray-900">Airuska Ayala</a>
-            <ul class="hidden md:flex space-x-8 text-gray-700 font-medium">
-                <li><a href="#hero" class="hover:text-emerald-600 transition">Inicio</a></li>
-                <li><a href="#sobre-mi" class="hover:text-emerald-600 transition">Sobre Mí</a></li>
-                <li><a href="#servicios" class="hover:text-emerald-600 transition">Servicios</a></li>
-                <li><a href="propiedades.php" class="hover:text-emerald-600 transition">Propiedades</a></li>
-                <li><a href="blog.php" class="hover:text-emerald-600 transition">Blog</a></li>
-                <li><a href="#contacto" class="hover:text-emerald-600 transition">Contacto</a></li>
-            </ul>
+            <div class="flex items-center gap-4">
+                <button id="mobile-menu-open" type="button" class="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-100" aria-label="Abrir menú" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <ul class="hidden md:flex space-x-8 text-gray-700 font-medium">
+                    <li><a href="#hero" class="hover:text-emerald-600 transition">Inicio</a></li>
+                    <li><a href="#sobre-mi" class="hover:text-emerald-600 transition">Sobre Mí</a></li>
+                    <li><a href="#servicios" class="hover:text-emerald-600 transition">Servicios</a></li>
+                    <li><a href="propiedades.php" class="hover:text-emerald-600 transition">Propiedades</a></li>
+                    <li><a href="blog.php" class="hover:text-emerald-600 transition">Blog</a></li>
+                    <li><a href="#contacto" class="hover:text-emerald-600 transition">Contacto</a></li>
+                </ul>
+            </div>
         </nav>
+        <div id="mobile-navigation" class="md:hidden hidden border-t border-gray-200 bg-white">
+            <div class="container mx-auto px-6 py-4 space-y-3">
+                <a href="#hero" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Inicio</a>
+                <a href="#sobre-mi" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Sobre Mí</a>
+                <a href="#servicios" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Servicios</a>
+                <a href="propiedades.php" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Propiedades</a>
+                <a href="blog.php" class="block rounded-2xl px-4 py-3 text-gray-900 font-medium hover:bg-gray-100">Blog</a>
+                <a href="#contacto" class="block w-full text-center bg-black text-white px-4 py-3 rounded-2xl font-bold hover:bg-emerald-600 transition">Contacto</a>
+            </div>
+        </div>
     </header>
 
     <section id="hero" class="relative min-h-screen flex items-center bg-gray-900 text-white overflow-hidden">
@@ -281,6 +298,27 @@ try {
             const container = document.getElementById('modal-container');
             if (event.target == container) closeModal();
         }
+
+        function setupMobileNav() {
+            const menuButton = document.getElementById('mobile-menu-open');
+            const mobileNav = document.getElementById('mobile-navigation');
+            if (!menuButton || !mobileNav) return;
+
+            menuButton.addEventListener('click', () => {
+                const isOpen = !mobileNav.classList.contains('hidden');
+                mobileNav.classList.toggle('hidden', isOpen);
+                menuButton.setAttribute('aria-expanded', String(!isOpen));
+            });
+
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.add('hidden');
+                    menuButton.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+
+        setupMobileNav();
 
         // --- Lógica de Envío de Formulario ---
         document.getElementById('contact-form').addEventListener('submit', async function(e) {
