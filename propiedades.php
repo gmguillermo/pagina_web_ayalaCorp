@@ -112,20 +112,21 @@ sort($property_communes);
                     <?php foreach ($available_properties as $property): ?>
                         <article
                             class="property-card bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-md hover:shadow-xl transition flex flex-col"
-                            data-id="<?= htmlspecialchars((string) $property['id']) ?>"
-                            data-title="<?= htmlspecialchars($property['title'], ENT_QUOTES) ?>"
-                            data-commune="<?= htmlspecialchars($property['commune'], ENT_QUOTES) ?>"
-                            data-description="<?= htmlspecialchars($property['description'], ENT_QUOTES) ?>"
-                            data-image="<?= htmlspecialchars($property['image'], ENT_QUOTES) ?>"
-                            data-price-label="<?= htmlspecialchars($property['price_label'], ENT_QUOTES) ?>"
-                            data-operation="<?= htmlspecialchars($property['operation'], ENT_QUOTES) ?>"
-                            data-status="<?= htmlspecialchars($property['status'], ENT_QUOTES) ?>"
-                            data-bedrooms="<?= htmlspecialchars((string) $property['bedrooms'], ENT_QUOTES) ?>"
-                            data-bathrooms="<?= htmlspecialchars((string) $property['bathrooms'], ENT_QUOTES) ?>"
+                            data-id="<?= htmlspecialchars((string) ($property['id'] ?? ''), ENT_QUOTES) ?>"
+                            data-search="<?= htmlspecialchars(mb_strtolower(($property['title'] ?? '') . ' ' . ($property['commune'] ?? '') . ' ' . ($property['description'] ?? '')), ENT_QUOTES) ?>"
+                            data-title="<?= htmlspecialchars($property['title'] ?? '', ENT_QUOTES) ?>"
+                            data-commune="<?= htmlspecialchars($property['commune'] ?? '', ENT_QUOTES) ?>"
+                            data-description="<?= htmlspecialchars($property['description'] ?? '', ENT_QUOTES) ?>"
+                            data-image="<?= htmlspecialchars($property['image'] ?? '', ENT_QUOTES) ?>"
+                            data-price-label="<?= htmlspecialchars($property['price_label'] ?? '', ENT_QUOTES) ?>"
+                            data-operation="<?= htmlspecialchars($property['operation'] ?? '', ENT_QUOTES) ?>"
+                            data-status="<?= htmlspecialchars($property['status'] ?? '', ENT_QUOTES) ?>"
+                            data-bedrooms="<?= htmlspecialchars((string) ($property['bedrooms'] ?? 0), ENT_QUOTES) ?>"
+                            data-bathrooms="<?= htmlspecialchars((string) ($property['bathrooms'] ?? 0), ENT_QUOTES) ?>"
                             data-video-url="<?= htmlspecialchars($property['video_url'] ?? '', ENT_QUOTES) ?>"
                             data-video-embed="<?= htmlspecialchars($property['video_embed_url'] ?? '', ENT_QUOTES) ?>"
-                            data-price="<?= htmlspecialchars((string) $property['price_value']) ?>"
-                            data-type="<?= htmlspecialchars($property['type']) ?>"
+                            data-price="<?= htmlspecialchars((string) ($property['price_value'] ?? 0), ENT_QUOTES) ?>"
+                            data-type="<?= htmlspecialchars($property['type'] ?? '', ENT_QUOTES) ?>"
                         >
                             <div class="relative aspect-video bg-gray-200 overflow-hidden">
                                 <?php if (!empty($property['video_embed_url'])): ?>
@@ -244,7 +245,7 @@ sort($property_communes);
             let visibleCount = 0;
 
             propertyCards.forEach(card => {
-                const matchesSearch = !search || card.dataset.title.includes(search);
+                const matchesSearch = !search || card.dataset.search.includes(search);
                 const matchesType = !type || card.dataset.type === type;
                 const matchesCommune = !commune || card.dataset.commune === commune;
                 const matchesBudget = !budget || Number(card.dataset.price) <= budget;
@@ -308,20 +309,37 @@ sort($property_communes);
             const whatsappLink = document.getElementById('property-preview-whatsapp');
             whatsappLink.href = `https://wa.me/56940174702?text=${formatWhatsAppMessage({ title, commune, priceLabel, videoUrl })}`;
 
-            previewMedia.innerHTML = '';
+            previewMedia.textContent = '';
             if (videoEmbed) {
-                previewMedia.innerHTML = `
-                    <iframe class="w-full h-full" src="${videoEmbed}" title="Video de ${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                `;
+                const iframe = document.createElement('iframe');
+                iframe.className = 'w-full h-full';
+                iframe.src = videoEmbed;
+                iframe.title = `Video de ${title}`;
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+                iframe.allowFullscreen = true;
+                previewMedia.appendChild(iframe);
             } else if (videoUrl) {
-                previewMedia.innerHTML = `
-                    <div class="relative h-full w-full overflow-hidden rounded-[1.75rem] bg-black">
-                        <img src="${image}" alt="${title}" class="h-full w-full object-cover opacity-70" />
-                        <a href="${videoUrl}" target="_blank" rel="noopener" class="absolute inset-0 flex items-center justify-center text-white text-lg font-bold bg-black/40 hover:bg-black/50 transition">Abrir video</a>
-                    </div>
-                `;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative h-full w-full overflow-hidden rounded-[1.75rem] bg-black';
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = title;
+                img.className = 'h-full w-full object-cover opacity-70';
+                const link = document.createElement('a');
+                link.href = videoUrl;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.className = 'absolute inset-0 flex items-center justify-center text-white text-lg font-bold bg-black/40 hover:bg-black/50 transition';
+                link.textContent = 'Abrir video';
+                wrapper.appendChild(img);
+                wrapper.appendChild(link);
+                previewMedia.appendChild(wrapper);
             } else {
-                previewMedia.innerHTML = `<img src="${image}" alt="${title}" class="h-full w-full object-cover" />`;
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = title;
+                img.className = 'h-full w-full object-cover';
+                previewMedia.appendChild(img);
             }
 
             modal.classList.remove('hidden');

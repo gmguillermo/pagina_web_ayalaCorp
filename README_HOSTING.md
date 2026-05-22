@@ -678,6 +678,8 @@ https://www.youtube.com/embed/VIDEO_ID
 
 El sitio convierte el enlace y muestra el video dentro de la tarjeta.
 
+No pegues codigo completo tipo `<iframe ...></iframe>` en columnas de texto. Si por error lo pegas en `video_url`, el sistema intentara extraer el link, pero lo recomendado es pegar solo la URL.
+
 Si `video_url` esta vacio, se muestra la imagen de `image`.
 
 ### Paso E: publicar la hoja como CSV
